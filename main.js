@@ -30,8 +30,6 @@ function setup(){
   
   //there can be error due to above 2 lines
 
-  image(video, 0, 0, 700, 600);
-
   posenet = ml5.poseNet(video, modelLoaded);
   // posenet.on(poses, gotPoses);
 }
@@ -43,8 +41,8 @@ function modelLoaded(){
 
 
 function draw(){
-
  background(0); 
+  image(video, 0, 0, 700, 600);
 
  fill("black");
  stroke("black");
