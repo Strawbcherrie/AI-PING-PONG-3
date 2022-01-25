@@ -1,3 +1,9 @@
+wristX = 0;
+wristY = 0;
+
+rightwrist_score ="";
+
+gamestatus = "";
 
 var paddle2 =10,paddle1=10;
 
@@ -23,12 +29,33 @@ var ball = {
 function setup(){
   var canvas =  createCanvas(700,600);
   canvas.parent("canvas");
+
+  video = createCapture(VIDEO);
+  video.size(700,600);
+  video.hide();
+  
+  //there can be error due to above 2 lines
+
+  posenet = ml5.poseNet(video, modelLoaded);
+  posenet.on("pose", gotPoses);
+}
+
+function modelLoaded(){
+  console.log("model is loaded");
+}
+
+
+function startGame(){
+  gamestatus = "start";
+  document.getElementById("status").innerHTML = "Game is loaded."
 }
 
 
 function draw(){
-
+  if(gamestatus === "start") 
+{
  background(0); 
+  image(video, 0, 0, 700, 600);
 
  fill("black");
  stroke("black");
@@ -65,9 +92,32 @@ function draw(){
    
    //function move call which in very important
     move();
+
+    // our posenet for this function code begins from here
+    
+  
+  if(rightwrist_score > 0.2){
+    fill("#FF0000");
+    stroke("#000000");
+    circle(wristX , wristY, 20);
+  }
+}
 }
 
+function gotPoses(results){
 
+  
+  if(results.length > 0){
+    console.log(results);
+    wristX = results[0].pose.rightWrist.x;
+    wristY = results[0].pose.rightWrist.y;
+    console.log( " Right wrist's X = " + wristX + " and its Y = " + wristY);
+
+
+    rightwrist_score = results[0].pose.score;
+    
+  }
+}
 
 //function reset when ball does notcame in the contact of padde
 function reset(){
@@ -121,7 +171,7 @@ function move(){
   else{
     pcscore++;
     reset();
-    navigator.vibrate(100);
+    // navigator.vibrate(100);
   }
 }
 if(pcscore ==4){
@@ -162,3 +212,4 @@ function paddleInCanvas(){
     mouseY =0;
   }  
 }
+
