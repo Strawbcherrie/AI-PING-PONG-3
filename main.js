@@ -26,6 +26,13 @@ var ball = {
     dy:6
 }
 
+function preload(){
+  touch_paddel_sound = loadSound("ball_touch_paddel.wav");
+  missed_sound = loadSound("missed.wav");
+}
+
+
+
 function setup(){
   var canvas =  createCanvas(700,600);
   canvas.parent("canvas");
@@ -72,7 +79,7 @@ function draw(){
    fill(250,0,0);
     stroke(0,0,250);
     strokeWeight(0.5);
-   paddle1Y = mouseY; 
+   paddle1Y = wristY; 
    rect(paddle1X,paddle1Y,paddle1,paddle1Height,100);
    
    
@@ -127,7 +134,15 @@ function reset(){
    ball.dy =6;
    
 }
+// don't try to understand the very next rem statement as it makes no sense and I am not sure whether thhat is true or not
+//restart is our function that will work on the click of the restart btn but reset will work automatically with the help of if loops in  a case, condition or situation where the computer or the user will miss one ball and the scores will
+function restart(){
+  pcscore = 0;
+  playerscore = 0;
+  loop();
 
+  
+}
 
 //function midline draw a line in center
 function midline(){
@@ -153,6 +168,8 @@ function drawScore(){
 }
 
 
+
+
 //very important function of this game
 function move(){
    fill(50,350,0);
@@ -164,14 +181,19 @@ function move(){
    if(ball.x+ball.r>width-ball.r/2){
        ball.dx=-ball.dx-0.5;       
    }
-  if (ball.x-2.5*ball.r/2< 0){
-  if (ball.y >= paddle1Y&& ball.y <= paddle1Y + paddle1Height) {
+   if (ball.x-2.5*ball.r/2< 0){
+   if (ball.y >= paddle1Y&& ball.y <= paddle1Y + paddle1Height) {
     ball.dx = -ball.dx+0.5; 
+    touch_paddel_sound.play();
+    playerscore = playerscore + 1;
+    text("Player:",100,50)
+    text(playerscore,140,50);
   }
   else{
     pcscore++;
     reset();
     // navigator.vibrate(100);
+    missed_sound.play();
   }
 }
 if(pcscore ==4){
@@ -182,7 +204,7 @@ if(pcscore ==4){
     stroke("white");
     textSize(25)
     text("Game Over!☹☹",width/2,height/2);
-    text("Reload The Page!",width/2,height/2+30)
+    text("Dear user kindly press the restart button to re-play the game!",width/2,height/2+30)
     noLoop();
     pcscore = 0;
 }
@@ -205,11 +227,11 @@ function models(){
 
 //this function help to not go te paddle out of canvas
 function paddleInCanvas(){
-  if(mouseY+paddle1Height > height){
-    mouseY=height-paddle1Height;
+  if(wristY+paddle1Height > height){
+    wristY=height-paddle1Height;
   }
-  if(mouseY < 0){
-    mouseY =0;
+  if(wristY < 0){
+    wristY =0;
   }  
 }
 
